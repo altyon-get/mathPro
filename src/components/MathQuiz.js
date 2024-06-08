@@ -4,7 +4,7 @@ import Numpad from "./Numpad";
 import ScoreHistory from "./ScoreHistory";
 import { useNavigate } from "react-router-dom";
 
-const MathQuiz = ({ userName }) => {
+const MathQuiz = () => {
   const [num1, setNum1] = useState(0);
   const [num2, setNum2] = useState(0);
   const [answer, setAnswer] = useState("");
@@ -51,14 +51,18 @@ const MathQuiz = ({ userName }) => {
       setScores(latestScores);
       localStorage.setItem("scores", JSON.stringify(latestScores));
       setTimeout(generateNewQuestion, 1000); // Delay for showing correct feedback
-    } else {
-      // setFeedback('Incorrect! Try again.');
-      // setAnswer('');
+    } else if (answer.length === correctAnswer.toString().length) {
+      setFeedback("Incorrect! Try again.");
+      setTimeout(() => {
+        setAnswer("");
+        setFeedback("");
+      }, 1000);
     }
   };
 
   const handleClick = (num) => {
-    if (num === "X") {
+    if (num === "<") {
+      if(answer.length > 0)
       setAnswer(answer.slice(0, -1));
     } else if (num === "CC") {
       setAnswer("");
@@ -119,14 +123,8 @@ const MathQuiz = ({ userName }) => {
           {showNumpad && <Numpad onClick={(num) => handleClick(num)} />}
         </div>
         <div className="history-section">
-          <ScoreHistory scores={scores} />
+          {/* <ScoreHistory scores={scores} /> */}
           <div className="buttons">
-            <button className="clear-button" onClick={handleClear}>
-              Clear
-            </button>
-            <button className="clear-all-button" onClick={handleClearAll}>
-              Clear All
-            </button>
             <button className="stop-button" onClick={handleStop}>
               Stop
             </button>

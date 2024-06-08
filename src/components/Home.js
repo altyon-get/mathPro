@@ -1,27 +1,41 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Home.css';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Home.css";
+import ScoreHistory from "./ScoreHistory";
 
-const Home = ({ setUserName }) => {
-  const [name, setName] = useState('');
+const Home = ({ setUserName, userLoggedOut, userName }) => {
+  const [name, setName] = useState("");
+  const [scores, setScores] = useState([]);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setUserName(name);
-    navigate('/game');
+    localStorage.setItem("username", name);
+    navigate("/game");
   };
+
+  useEffect(() => {
+    const savedScores = JSON.parse(localStorage.getItem("scores")) || [];
+    setScores(savedScores);
+  })
+
 
   return (
     <div className="home">
       <h1>Speed Up Your Calculation</h1>
-      <div className="user-info">
-        {localStorage.getItem('username') && (
-          <div className="current-user">
-            <p>Current User: {localStorage.getItem('username')}</p>
-            <p>Highest Score: {localStorage.getItem('highestScore')}</p>
-          </div>
-        )}
+      {userName && (
+        <>
+        <div className="user-info">
+          <p>Current User: {userName}</p>
+          <button className="logout-button" onClick={userLoggedOut}>
+            Logout
+          </button>
+        </div>
+        <ScoreHistory scores={scores}/>
+        </>
+      )}
+      {!userName && (
         <form onSubmit={handleSubmit}>
           <input
             type="text"
@@ -32,16 +46,7 @@ const Home = ({ setUserName }) => {
           />
           <button type="submit">Start Game</button>
         </form>
-        {localStorage.getItem('username') && (
-          <button className="logout-button" onClick={() => {
-            localStorage.removeItem('username');
-            localStorage.removeItem('highestScore');
-            setUserName('');
-          }}>
-            Logout
-          </button>
-        )}
-      </div>
+      )}
     </div>
   );
 };
