@@ -3,6 +3,12 @@
   padding: 20px;
 }
 
+.main{
+  display: flex;
+  flex-direction: column;
+  gap:10px;
+}
+
 .home h1 {
   font-size: 28px;
   margin-bottom: 20px;

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./MathQuiz.css";
 import Numpad from "./Numpad";
-import ScoreHistory from "./ScoreHistory";
 import { useNavigate } from "react-router-dom";
 
 const MathQuiz = () => {
@@ -13,17 +12,29 @@ const MathQuiz = () => {
   const [scores, setScores] = useState([]);
   const [showNumpad, setShowNumpad] = useState(true);
   const [feedback, setFeedback] = useState("");
+  const [bestScore, setBestScore] = useState(null);
+  const [operation, setOperation] = useState("addition");
   const navigate = useNavigate();
 
   useEffect(() => {
     generateNewQuestion();
     const savedScores = JSON.parse(localStorage.getItem("scores")) || [];
     setScores(savedScores);
+
+    const savedBestScore = JSON.parse(localStorage.getItem("bestScore"));
+    if (savedBestScore) {
+      setBestScore(savedBestScore);
+    }
   }, []);
 
   const generateNewQuestion = () => {
-    const n1 = Math.floor(Math.random() * 90) + 10;
-    const n2 = Math.floor(Math.random() * 90) + 10;
+    let n1 = Math.floor(Math.random() * 90) + 10;
+    let n2 = Math.floor(Math.random() * 90) + 10;
+
+    if (operation === "subtraction" && n1 < n2) {
+      [n1, n2] = [n2, n1]; // Swap n1 and n2 if n1 is less than n2 for subtraction
+    }
+
     setNum1(n1);
     setNum2(n2);
     setAnswer("");
@@ -32,7 +43,13 @@ const MathQuiz = () => {
   };
 
   const handleSubmit = () => {
-    const correctAnswer = num1 + num2;
+    let correctAnswer;
+    if (operation === "addition") {
+      correctAnswer = num1 + num2;
+    } else {
+      correctAnswer = num1 - num2;
+    }
+
     const userAnswer = parseInt(answer, 10);
     const endTime = Date.now();
     const timeDiff = (endTime - startTime) / 1000;
@@ -42,14 +59,25 @@ const MathQuiz = () => {
       setTimeTaken(timeDiff);
       const newScores = [
         ...scores,
-        { question: `${num1} + ${num2}`, time: timeDiff },
+        {
+          question: `${num1} ${operation === "addition" ? "+" : "-"} ${num2}`,
+          time: timeDiff,
+        },
       ];
-      // const latestScores = newScores.slice(-10);
-      // const newScores = [...scores, { question: `${num1} + ${num2}`, time: timeDiff }];
       const sortedScores = newScores.sort((a, b) => a.time - b.time); // Sort scores in increasing order of time
       const latestScores = sortedScores.slice(-10);
       setScores(latestScores);
       localStorage.setItem("scores", JSON.stringify(latestScores));
+
+      if (!bestScore || timeDiff < bestScore.time) {
+        const newBestScore = {
+          question: `${num1} ${operation === "addition" ? "+" : "-"} ${num2}`,
+          time: timeDiff,
+        };
+        setBestScore(newBestScore);
+        localStorage.setItem("bestScore", JSON.stringify(newBestScore));
+      }
+
       setTimeout(generateNewQuestion, 1000); // Delay for showing correct feedback
     } else if (answer.length === correctAnswer.toString().length) {
       setFeedback("Incorrect! Try again.");
@@ -62,22 +90,12 @@ const MathQuiz = () => {
 
   const handleClick = (num) => {
     if (num === "<") {
-      if(answer.length > 0)
-      setAnswer(answer.slice(0, -1));
+      if (answer.length > 0) setAnswer(answer.slice(0, -1));
     } else if (num === "CC") {
       setAnswer("");
     } else {
       setAnswer(answer + num);
     }
-  };
-
-  const handleClear = () => {
-    setAnswer("");
-  };
-
-  const handleClearAll = () => {
-    setAnswer("");
-    setFeedback("");
   };
 
   const handleStop = () => {
@@ -86,6 +104,11 @@ const MathQuiz = () => {
 
   const handleRestart = () => {
     generateNewQuestion();
+  };
+
+  const handleOperationChange = (event) => {
+    setOperation(event.target.value);
+    generateNewQuestion(); // Generate a new question when operation changes
   };
 
   useEffect(() => {
@@ -99,7 +122,7 @@ const MathQuiz = () => {
       <div className="content">
         <div className="game-section">
           <div className="question">
-            {num1} + {num2} =
+            {num1} {operation === "addition" ? "+" : "-"} {num2} =
             <input
               type="number"
               value={answer}
@@ -119,11 +142,20 @@ const MathQuiz = () => {
           {timeTaken !== null && (
             <p>Time taken: {timeTaken.toFixed(2)} seconds</p>
           )}
-          {/* <button className="numpad-toggle" onClick={() => setShowNumpad(!showNumpad)}>Toggle Numpad</button> */}
           {showNumpad && <Numpad onClick={(num) => handleClick(num)} />}
         </div>
         <div className="history-section">
-          {/* <ScoreHistory scores={scores} /> */}
+          <div className="best-score">
+            <h3>Best Score:</h3>
+            {bestScore ? (
+              <p>
+                Question: {bestScore.question}, Time:{" "}
+                {bestScore.time.toFixed(2)} seconds
+              </p>
+            ) : (
+              <p>No best score yet</p>
+            )}
+          </div>
           <div className="buttons">
             <button className="stop-button" onClick={handleStop}>
               Stop
@@ -132,6 +164,27 @@ const MathQuiz = () => {
               Restart
             </button>
           </div>
+        </div>
+        <div className="operation-selection">
+        <h3>Select Mode:</h3>
+          <label>
+            <input
+              type="radio"
+              value="addition"
+              checked={operation === "addition"}
+              onChange={handleOperationChange}
+            />
+            Addition
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="subtraction"
+              checked={operation === "subtraction"}
+              onChange={handleOperationChange}
+            />
+            Subtraction
+          </label>
         </div>
       </div>
     </div>

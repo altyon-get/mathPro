@@ -15,25 +15,33 @@ const Home = ({ setUserName, userLoggedOut, userName }) => {
     navigate("/game");
   };
 
+  const handleStop = () => {
+    navigate("/game");
+  };
+
   useEffect(() => {
     const savedScores = JSON.parse(localStorage.getItem("scores")) || [];
     setScores(savedScores);
-  })
-
+  });
 
   return (
     <div className="home">
       <h1>Speed Up Your Calculation</h1>
       {userName && (
-        <>
-        <div className="user-info">
-          <p>Current User: {userName}</p>
-          <button className="logout-button" onClick={userLoggedOut}>
-            Logout
+        <div className="main">
+          <div className="user-info">
+            <p>Current User: {userName}</p>
+            <button className="logout-button" onClick={userLoggedOut}>
+              Logout
+            </button>
+          </div>
+          <div className="score">
+            <ScoreHistory scores={scores} />
+          </div>
+          <button type="submit" onClick={handleStop}>
+            Continue Game
           </button>
         </div>
-        <ScoreHistory scores={scores}/>
-        </>
       )}
       {!userName && (
         <form onSubmit={handleSubmit}>
