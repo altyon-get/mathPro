@@ -1,38 +1,63 @@
-.App {
+/* Home Page Styling */
+.home {
   text-align: center;
+  margin-top: 50px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.home h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.home input[type="text"] {
+  padding: 15px;
+  font-size: 20px;
+  margin-right: 10px;
+  width: 70%;
+  max-width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.home button {
+  padding: 15px 30px;
+  font-size: 20px;
+  cursor: pointer;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+}
+
+/* Current User and Highest Score */
+.user-info {
+  margin-top: 20px;
+  font-size: 18px;
+}
+
+.user-info p {
+  margin-bottom: 10px;
+}
+
+.user-info button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #f44336; /* Red */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+  .home input[type="text"] {
+    width: calc(100% - 20px);
+    max-width: none;
   }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+  
+  .home button {
+    width: calc(100% - 20px);
+    max-width: none;
   }
 }

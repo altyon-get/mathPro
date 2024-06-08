@@ -1,0 +1,25 @@
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+  justify-items: center;
+  padding: 20px;
+}
+
+.numpad button {
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.placeholder {
+  width: 60px;
+  height: 60px;
+}

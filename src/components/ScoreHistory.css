@@ -1,0 +1,55 @@
+.score-history {
+  background-color: #e0f7e0;
+  border: 2px solid #2e7d32;
+  border-radius: 10px;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* width: 100%; */
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.score-history h2 {
+  color: #2e7d32;
+  font-size: 24px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.score-history ul {
+  list-style-type: none;
+  padding: 0;
+  max-height: 300px; /* Set a max-height to trigger scrolling */
+  overflow-y: auto; /* Enable vertical scrolling if content overflows */
+}
+
+.score-history li {
+  background-color: #ffffff;
+  border: 1px solid #2e7d32;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 18px;
+  transition: transform 0.3s ease;
+}
+
+.score-history li:hover {
+  /* transform: scale(1.05); */
+}
+
+.score-history .top-score {
+  background-color: #a5d6a7;
+  font-weight: bold;
+  color: #1b5e20;
+}
+
+/* Customize the scrollbar */
+.score-history ul::-webkit-scrollbar {
+  width: 2px;
+}
+
+.score-history ul::-webkit-scrollbar-thumb {
+  background-color: #2e7d32;
+  border-radius: 4px;
+}
