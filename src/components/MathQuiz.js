@@ -3,21 +3,35 @@ import "./MathQuiz.css";
 import Numpad from "./Numpad";
 import { useNavigate } from "react-router-dom";
 
-const MathQuiz = () => {
-  const [num1, setNum1] = useState(0);
-  const [num2, setNum2] = useState(0);
-  const [answer, setAnswer] = useState("");
-  const [startTime, setStartTime] = useState(null);
-  const [timeTaken, setTimeTaken] = useState(null);
+const MathQuiz = ({
+  num1,
+  num2,
+  answer,
+  setAnswer,
+  startTime,
+  timeTaken,
+  setTimeTaken,
+  feedback,
+  setFeedback,
+  // userName,
+  operation,
+  setOperation,
+  onGenerateNewQuestion,
+}) => {
+  // const [num1, setNum1] = useState(0);
+  // const [num2, setNum2] = useState(0);
+  // const [answer, setAnswer] = useState("");
+  // const [startTime, setStartTime] = useState(null);
+  // const [timeTaken, setTimeTaken] = useState(null);
   const [scores, setScores] = useState([]);
   const [showNumpad, setShowNumpad] = useState(true);
-  const [feedback, setFeedback] = useState("");
+  // const [feedback, setFeedback] = useState("");
   const [bestScore, setBestScore] = useState(null);
-  const [operation, setOperation] = useState("addition");
+  // const [operation, setOperation] = useState("addition");
   const navigate = useNavigate();
 
   useEffect(() => {
-    generateNewQuestion();
+    onGenerateNewQuestion();
     const savedScores = JSON.parse(localStorage.getItem("scores")) || [];
     setScores(savedScores);
 
@@ -27,20 +41,20 @@ const MathQuiz = () => {
     }
   }, []);
 
-  const generateNewQuestion = () => {
-    let n1 = Math.floor(Math.random() * 90) + 10;
-    let n2 = Math.floor(Math.random() * 90) + 10;
+  // const generateNewQuestion = () => {
+  //   let n1 = Math.floor(Math.random() * 90) + 10;
+  //   let n2 = Math.floor(Math.random() * 90) + 10;
 
-    if (operation === "subtraction" && n1 < n2) {
-      [n1, n2] = [n2, n1]; // Swap n1 and n2 if n1 is less than n2 for subtraction
-    }
+  //   if (operation === "subtraction" && n1 < n2) {
+  //     [n1, n2] = [n2, n1]; // Swap n1 and n2 if n1 is less than n2 for subtraction
+  //   }
 
-    setNum1(n1);
-    setNum2(n2);
-    setAnswer("");
-    setStartTime(Date.now());
-    setFeedback("");
-  };
+  //   setNum1(n1);
+  //   setNum2(n2);
+  //   setAnswer("");
+  //   setStartTime(Date.now());
+  //   setFeedback("");
+  // };
 
   const handleSubmit = () => {
     let correctAnswer;
@@ -62,7 +76,13 @@ const MathQuiz = () => {
       const newScores = [
         ...scores,
         {
-          question: `${num1} ${operation === "addition" ? "+" : operation === "subtraction" ? "-" : "LCM"} ${num2}`,
+          question: `${num1} ${
+            operation === "addition"
+              ? "+"
+              : operation === "subtraction"
+              ? "-"
+              : "LCM"
+          } ${num2}`,
           time: timeDiff,
         },
       ];
@@ -73,14 +93,20 @@ const MathQuiz = () => {
 
       if (!bestScore || timeDiff < bestScore.time) {
         const newBestScore = {
-          question: `${num1} ${operation === "addition" ? "+" : operation === "subtraction" ? "-" : "LCM"} ${num2}`,
+          question: `${num1} ${
+            operation === "addition"
+              ? "+"
+              : operation === "subtraction"
+              ? "-"
+              : "LCM"
+          } ${num2}`,
           time: timeDiff,
         };
         setBestScore(newBestScore);
         localStorage.setItem("bestScore", JSON.stringify(newBestScore));
       }
 
-      setTimeout(generateNewQuestion, 1000); // Delay for showing correct feedback
+      setTimeout(onGenerateNewQuestion, 1000); // Delay for showing correct feedback
     } else if (answer.length === correctAnswer.toString().length) {
       setFeedback("Incorrect! Try again.");
       setTimeout(() => {
@@ -110,13 +136,13 @@ const MathQuiz = () => {
   };
 
   const handleRestart = () => {
-    generateNewQuestion();
+    onGenerateNewQuestion();
   };
 
-  const handleOperationChange = (event) => {
-    setOperation(event.target.value);
-    generateNewQuestion(); // Generate a new question when operation changes
-  };
+  // const handleOperationChange = (event) => {
+  //   setOperation(event.target.value);
+  //   generateNewQuestion(); // Generate a new question when operation changes
+  // };
 
   useEffect(() => {
     if (answer.length > 0) {
@@ -129,7 +155,13 @@ const MathQuiz = () => {
       <div className="content">
         <div className="game-section">
           <div className="question">
-            {num1} {operation === "addition" ? "+" : operation === "subtraction" ? "-" : "LCM"} {num2} =
+            {num1}{" "}
+            {operation === "addition"
+              ? "+"
+              : operation === "subtraction"
+              ? "-"
+              : "LCM"}{" "}
+            {num2} =
             <input
               type="number"
               value={answer}
@@ -171,36 +203,6 @@ const MathQuiz = () => {
               Restart
             </button>
           </div>
-        </div>
-        <div className="operation-selection">
-          <h3>Select Mode:</h3>
-          <label>
-            <input
-              type="radio"
-              value="addition"
-              checked={operation === "addition"}
-              onChange={handleOperationChange}
-            />
-            Addition
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="subtraction"
-              checked={operation === "subtraction"}
-              onChange={handleOperationChange}
-            />
-            Subtraction
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="lcm"
-              checked={operation === "lcm"}
-              onChange={handleOperationChange}
-            />
-            LCM
-          </label>
         </div>
       </div>
     </div>
