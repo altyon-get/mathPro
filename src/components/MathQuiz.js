@@ -46,8 +46,10 @@ const MathQuiz = () => {
     let correctAnswer;
     if (operation === "addition") {
       correctAnswer = num1 + num2;
-    } else {
+    } else if (operation === "subtraction") {
       correctAnswer = num1 - num2;
+    } else if (operation === "lcm") {
+      correctAnswer = calculateLCM(num1, num2);
     }
 
     const userAnswer = parseInt(answer, 10);
@@ -60,7 +62,7 @@ const MathQuiz = () => {
       const newScores = [
         ...scores,
         {
-          question: `${num1} ${operation === "addition" ? "+" : "-"} ${num2}`,
+          question: `${num1} ${operation === "addition" ? "+" : operation === "subtraction" ? "-" : "LCM"} ${num2}`,
           time: timeDiff,
         },
       ];
@@ -71,7 +73,7 @@ const MathQuiz = () => {
 
       if (!bestScore || timeDiff < bestScore.time) {
         const newBestScore = {
-          question: `${num1} ${operation === "addition" ? "+" : "-"} ${num2}`,
+          question: `${num1} ${operation === "addition" ? "+" : operation === "subtraction" ? "-" : "LCM"} ${num2}`,
           time: timeDiff,
         };
         setBestScore(newBestScore);
@@ -86,6 +88,11 @@ const MathQuiz = () => {
         setFeedback("");
       }, 1000);
     }
+  };
+
+  const calculateLCM = (a, b) => {
+    const gcd = (x, y) => (!y ? x : gcd(y, x % y));
+    return (a * b) / gcd(a, b);
   };
 
   const handleClick = (num) => {
@@ -122,7 +129,7 @@ const MathQuiz = () => {
       <div className="content">
         <div className="game-section">
           <div className="question">
-            {num1} {operation === "addition" ? "+" : "-"} {num2} =
+            {num1} {operation === "addition" ? "+" : operation === "subtraction" ? "-" : "LCM"} {num2} =
             <input
               type="number"
               value={answer}
@@ -166,7 +173,7 @@ const MathQuiz = () => {
           </div>
         </div>
         <div className="operation-selection">
-        <h3>Select Mode:</h3>
+          <h3>Select Mode:</h3>
           <label>
             <input
               type="radio"
@@ -184,6 +191,15 @@ const MathQuiz = () => {
               onChange={handleOperationChange}
             />
             Subtraction
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="lcm"
+              checked={operation === "lcm"}
+              onChange={handleOperationChange}
+            />
+            LCM
           </label>
         </div>
       </div>
