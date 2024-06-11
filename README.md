@@ -1,6 +1,6 @@
 # MathPro
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is designed to help you to enhance your calculation speed
 
 ## Available Scripts
 
